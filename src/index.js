@@ -1,8 +1,31 @@
 import { GraphQLServer } from "graphql-yoga";
 
+// Demo user data
+const users = [
+  {
+    id: "1",
+    name: "shiva",
+    email: "shiva@shiva.com",
+    age: 29
+  },
+  {
+    id: "2",
+    name: "shambho",
+    email: "shambho@shiva.com",
+    age: 29
+  },
+  {
+    id: "3",
+    name: "shankara",
+    email: "shankara@shiva.com",
+    age: 29
+  }
+];
+
 // Type definitions (schema)
 const typeDefs = `
   type Query {
+    users(query: String): [User!]!
     me:User!
     post: Post!
   }
@@ -25,6 +48,14 @@ const typeDefs = `
 // Resolvers
 const resolvers = {
   Query: {
+    users(parent, args, ctx, info) {
+      if (!args.query) {
+        return users;
+      }
+      return users.filter(user => {
+        return user.name.toLowerCase().includes(args.query.toLowerCase());
+      });
+    },
     me() {
       return {
         id: "123",
