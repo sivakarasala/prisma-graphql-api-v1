@@ -22,10 +22,32 @@ const users = [
   }
 ];
 
+const posts = [
+  {
+    id: "10",
+    title: "Yoga",
+    body: "Surya Namaskar",
+    published: true
+  },
+  {
+    id: "20",
+    title: "Mantra",
+    body: "Gaayatri",
+    published: true
+  },
+  {
+    id: "30",
+    title: "Dhyana",
+    body: "Shiva",
+    published: false
+  }
+];
+
 // Type definitions (schema)
 const typeDefs = `
   type Query {
     users(query: String): [User!]!
+    posts(query: String): [Post!]!
     me:User!
     post: Post!
   }
@@ -54,6 +76,20 @@ const resolvers = {
       }
       return users.filter(user => {
         return user.name.toLowerCase().includes(args.query.toLowerCase());
+      });
+    },
+    posts(parent, args, ctx, info) {
+      if (!args.query) {
+        return posts;
+      }
+      return posts.filter(post => {
+        const isTitleMatch = post.title
+          .toLowerCase()
+          .includes(args.query.toLowerCase());
+        const isBodyMatch = post.body
+          .toLowerCase()
+          .includes(args.query.toLowerCase());
+        return isTitleMatch || isBodyMatch;
       });
     },
     me() {
